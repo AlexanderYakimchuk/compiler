@@ -24,8 +24,12 @@ code = '''  int i = 2;
 code1 = '''
     ticketType t = TicketType(name="VIP", quantity=5 * 2, price=99.99 - 1);
     ticketType t1 = TicketType(name="Standart", quantity=t.quantity * 2, price=49.99);
+    int a = 2;
+    a = a + 3;
+    t.quantity = t.quantity + 1.0;
     print(t.quantity);
-    print(t1.quantity);'''
+    print(t1.quantity);
+    print(a);'''
 lexer = Lexer(code1)
 tokens = lexer.get_all_tokens()
 tokens = tokens

@@ -138,5 +138,9 @@ operators = {
     TokenType.div: 2,
     TokenType.reference: 1}
 
+ref_operators = {
+    TokenType.reference: 1
+}
+
 creators = [TokenType.event_creator, TokenType.ticket_type_creator,
             TokenType.attendee_creator]

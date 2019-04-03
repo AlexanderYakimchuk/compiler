@@ -1,4 +1,4 @@
-from lexer.token_types import TokenType, operators
+from lexer.token_types import TokenType, operators, ref_operators
 from my_parser.comands import Declaration, IfStatement, Assigment, \
     WhileStatement, PrintStatement
 from my_parser.expressions import Expression, Block
@@ -108,7 +108,7 @@ class Parser:
     def parse_declaration(self):
         type_ = self.tokens[self.cur_index]
         self.cur_index += 1
-        if self.cur_token.is_identifier():
+        if self.cur_token.is_identifier:
             name = self.cur_token
         else:
             raise Exception(f'Expected identifier in ({self.cur_token.line}, {self.cur_token.column})')
@@ -174,15 +174,44 @@ class Parser:
             return Attendee(**params)
 
     def parse_assigment(self):
-        name = self.cur_token
-        self.cur_index += 1
+        end = self.skip(TokenType.assign)
+        name = self.parse_ref_expression(self.tokens[self.cur_index:end])
+        self.cur_index = end
+        # name = self.cur_token
+        # self.cur_index += 1
         if self.cur_token.token_type != TokenType.assign:
             raise Exception(f'Expected assigment at {self.cur_token.position}')
         self.cur_index += 1
         end = self.skip(TokenType.semicolon)
         value = self.parse_expression(self.tokens[self.cur_index:end])
         self.cur_index = end + 1
-        return Assigment(name.value, value)
+        return Assigment(name, value)
+
+    def get_max_priority_for_ref(self, tokens):
+        max_prior = -float('inf')
+        max_index = 0
+        for i in range(len(tokens)):
+            if tokens[i].is_ref_operator:
+                op_prior = ref_operators[tokens[i].token_type]
+                if op_prior >= max_prior:
+                    max_prior = op_prior
+                    max_index = i
+
+        return max_index
+
+    def parse_ref_expression(self, tokens):
+        index = self.get_max_priority_for_ref(tokens)
+        left = None
+        right = None
+        if tokens[index].is_operator:
+            if not (tokens[:index] and tokens[index + 1:]):
+                raise Exception(f'Invalid operator {tokens[index]}')
+            left = self.parse_expression(tokens[:index])
+            right = self.parse_expression(tokens[index + 1:])
+        return Expression(token_type=tokens[index],
+                          left=left,
+                          right=right,
+                          tokens=tokens)
 
     def parse_while(self):
         self.cur_index += 1

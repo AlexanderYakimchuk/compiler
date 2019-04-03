@@ -57,15 +57,14 @@ class Assigment(Command):
         self.value = value
 
     def execute(self, mem):
-        old_value = mem.get(self.name)
-        if not old_value:
-            raise Exception(f"Variable {self.name} is not declared.")
+        old_value = self.name.get_value(mem)
+        # if not old_value:
+        #     raise Exception(f"Variable {name.value} is not declared.")
         value = self.value.get_value(mem=mem)
         if (old_value.type_, value.type_) not in eq_types:
             raise Exception(
-                f'Incompatible type for var {self.name} expected {old_value.type_}')
-        value.type_ = old_value.type_
-        mem[self.name] = value
+                f'Incompatible type for var expected {old_value.type_}')
+        old_value.value = value.value
 
 
 class PrintStatement(Command):

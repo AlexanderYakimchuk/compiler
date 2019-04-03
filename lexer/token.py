@@ -1,4 +1,5 @@
-from lexer.token_types import TokenType, types, operators, creators
+from lexer.token_types import TokenType, types, operators, creators, \
+    ref_operators
 
 
 class Token:
@@ -31,9 +32,11 @@ class Token:
     def is_reference(self):
         return self.token_type == TokenType.reference
 
-    def is_identifier(self):
-        return self.token_type == TokenType.identifier
-
     @property
     def is_creator(self):
         return self.token_type in creators
+
+    @property
+    def is_ref_operator(self):
+        return self.token_type in ref_operators
+
