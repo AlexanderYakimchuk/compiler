@@ -19,15 +19,12 @@ code = '''  int i = 2;
             bool t = 9 + 4 == 9 + 2 + 2;
             while p < 15 {
                 p = p + 1;
-                print(p);
             }
             t = true and (p > 4);'''
 code1 = '''
-    int p = 1;
-    while p < 5 {
-        p = p + 1;
-    }'''
-lexer = Lexer(code)
+    ticketType t = TicketType(name="VIP", quantity=5, price=99.99);
+    print((t - 10).quantity);'''
+lexer = Lexer(code1)
 tokens = lexer.get_all_tokens()
 tokens = tokens
 parser = Parser(tokens)

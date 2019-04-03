@@ -23,6 +23,14 @@ class Token:
     def is_operator(self):
         return self.token_type in operators
 
+    @property
+    def is_identifier(self):
+        return self.token_type == TokenType.identifier
+
+    @property
+    def is_reference(self):
+        return self.token_type == TokenType.reference
+
     def is_identifier(self):
         return self.token_type == TokenType.identifier
 

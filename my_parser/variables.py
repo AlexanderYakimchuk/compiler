@@ -29,11 +29,11 @@ class Event:
         self.name = self.name.get_value(mem)
         if self.name.type_ != TokenType.string_value:
             raise Exception("Event name must be string")
-        self.name = self.name.value
+        # self.name = self.name.value
         self.quantity = self.quantity.get_value(mem)
         if self.quantity.type_ != TokenType.int_number:
             raise Exception("Event quantity must be int")
-        self.quantity = self.quantity.value
+        # self.quantity = self.quantity.value
         if self.ticket_types:
             self.ticket_types = self.ticket_types.get_value(mem).value
         self.__calculated = True
@@ -41,27 +41,27 @@ class Event:
 
     def __add__(self, other):
         if isinstance(other, int):
-            self.quantity += other
+            self.quantity.value += other
         elif isinstance(other, TicketType):
-            self.ticket_types.append(other)
+            self.ticket_types.value.append(other)
         return self
 
     def __sub__(self, other):
         if isinstance(other, int):
-            self.quantity -= other
+            self.quantity.value -= other
         elif isinstance(other, TicketType):
             self.sub_ticket_type(other)
         return self
 
     def __mul__(self, other):
         if isinstance(other, int):
-            self.quantity *= other
+            self.quantity.value *= other
         return self
 
     def sub_ticket_type(self, ticket_type):
-        if ticket_type.attendees:
+        if ticket_type.value.attendees.value:
             raise Exception("Can not delete ticket type with attendees.")
-        self.ticket_types.remove(ticket_type)
+        self.ticket_types.value.remove(ticket_type)
 
 
 class TicketType:
@@ -70,20 +70,45 @@ class TicketType:
         self.price = price
         self.quantity = quantity
         self.attendees = attendees
+        self.__calculated = False
 
     @property
     def type_(self):
         return str(type(self)).split('.')[-1][:-2]
 
-    @property
-    def value(self):
-        return self
+    def value(self, mem):
+        if not self.__calculated:
+            return self.get_value(mem)
+        return Value(self.type_, self)
+
+    def get_value(self, mem):
+        self.name = self.name.get_value(mem)
+        if self.name.type_ != TokenType.string_value:
+            raise Exception("TicketType name must be string")
+        self.quantity = self.quantity.get_value(mem)
+        if self.quantity.type_ != TokenType.int_number:
+            raise Exception("TicketType quantity must be int")
+        self.price = self.price.get_value(mem)
+        if self.price.type_ != TokenType.real_number:
+            raise Exception("TicketType price must be real")
+        if self.attendees:
+            self.attendees = self.attendees.get_value(mem)
+        self.__calculated = True
+        return Value(self.type_, self)
 
     def __add__(self, other):
         if isinstance(other, int):
-            self.quantity += other
+            self.quantity.value += other
         elif isinstance(other, Attendee):
-            self.attendees.append(other)
+            self.attendees.value.append(other)
+        return self
+
+    def __sub__(self, other):
+        if isinstance(other, int):
+            if not self.attendees or self.quantity.value - other >= len(self.attendees.value):
+                self.quantity.value -= other
+            else:
+                raise Exception(f'Min allowed quantity is {len(self.attendees.value)}')
         return self
 
 
@@ -91,11 +116,23 @@ class Attendee:
     def __init__(self, name, place):
         self.name = name
         self.place = place
+        self.__calculated = False
 
     @property
     def type_(self):
         return str(type(self)).split('.')[-1][:-2]
 
-    @property
-    def value(self):
-        return self
+    def value(self, mem):
+        if not self.__calculated:
+            return self.get_value(mem)
+        return Value(self.type_, self)
+
+    def get_value(self, mem):
+        self.name = self.name.get_value(mem)
+        if self.name.type_ != TokenType.string_value:
+            raise Exception("Attendee name must be string")
+        self.place = self.place.get_value(mem)
+        if self.place.type_ != TokenType.int_number:
+            raise Exception("TicketType quantity must be int")
+        self.__calculated = True
+        return Value(self.type_, self)

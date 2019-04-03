@@ -45,10 +45,11 @@ class Expression:
     def __repr__(self):
         return f"{self.token}; left={self.left}; right={self.right}"
 
+    @property
+    def is_identifier(self):
+        return len(self.tokens) == 1 and self.token.is_identifier
+
     def value(self, mem):
-        # if not self.value_:
-        #     self.value_ = self.get_value(mem)
-        # return self.value_
         return self.get_value(mem)
 
     def get_value(self, mem):
@@ -59,7 +60,16 @@ class Expression:
                     raise Exception(f"Variable {self.token.value} is not declared.")
                 return value
             return Value(self.token.token_type, self.token.value)
+
         left = self.left.value(mem)
+
+        if self.token.is_reference:
+            if not isinstance(self.right, Expression) or not self.right.is_identifier:
+                raise Exception(f'Expected identifier at {self.token.position}')
+            if not hasattr(left.value, self.right.token.value):
+                raise Exception(f'Object of type {left.type_} has not attr {self.right.token.value}')
+            attr = getattr(left.value, self.right.token.value)
+            return attr
         right = self.right.value(mem)
         return left.make_operation(self.token.token_type, right)
 
