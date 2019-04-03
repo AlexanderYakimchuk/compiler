@@ -36,8 +36,11 @@ class Parser:
         max_prior = -float('inf')
         max_index = 0
         open_p_numb = 0
+        ignore_op = False
         for i in range(len(tokens)):
-            if tokens[i].is_operator:
+            if tokens[i].is_creator:
+                ignore_op = True
+            if (not ignore_op) and tokens[i].is_operator:
                 op_prior = operators[tokens[i].token_type] - open_p_numb * 100
                 if op_prior >= max_prior:
                     max_prior = op_prior
@@ -46,6 +49,8 @@ class Parser:
                 open_p_numb += 1
             elif tokens[i].token_type == TokenType.r_parenthesis:
                 open_p_numb -= 1
+                if open_p_numb == 0 and ignore_op:
+                    ignore_op = False
             if open_p_numb < 0:
                 raise Exception("Invalid parenthesis")
         if open_p_numb != 0:
