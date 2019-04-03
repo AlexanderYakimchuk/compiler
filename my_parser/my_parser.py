@@ -1,3 +1,4 @@
+from lexer.token import Token
 from lexer.token_types import TokenType, operators, ref_operators
 from my_parser.comands import Declaration, IfStatement, Assigment, \
     WhileStatement, PrintStatement
@@ -36,12 +37,13 @@ class Parser:
         max_prior = -float('inf')
         max_index = 0
         open_p_numb = 0
+        open_s_numb = 0
         ignore_op = False
         for i in range(len(tokens)):
             if tokens[i].is_creator:
                 ignore_op = True
             if (not ignore_op) and tokens[i].is_operator:
-                op_prior = operators[tokens[i].token_type] - open_p_numb * 100
+                op_prior = operators[tokens[i].token_type] - open_p_numb * 100 - open_s_numb * 1000
                 if op_prior >= max_prior:
                     max_prior = op_prior
                     max_index = i
@@ -51,10 +53,18 @@ class Parser:
                 open_p_numb -= 1
                 if open_p_numb == 0 and ignore_op:
                     ignore_op = False
+            if tokens[i].token_type == TokenType.l_square:
+                open_s_numb += 1
+            if tokens[i].token_type == TokenType.r_square:
+                open_s_numb -= 1
             if open_p_numb < 0:
                 raise Exception("Invalid parenthesis")
+            if open_s_numb < 0:
+                raise Exception("Invalid squares")
         if open_p_numb != 0:
             raise Exception("Invalid parenthesis")
+        if open_s_numb != 0:
+            raise Exception("Invalid squares")
         return max_index
 
     def trim_edges(self, tokens):
@@ -82,10 +92,22 @@ class Parser:
         left = None
         right = None
         if tokens[index].is_operator:
-            if not (tokens[:index] and tokens[index + 1:]):
+            if not tokens[index + 1:]:
                 raise Exception(f'Invalid operator {tokens[index]}')
+            if not tokens[:index]:
+                if tokens[index].is_unary_operator:
+                    tokens = [Token(TokenType.int_number, '0')] + tokens
+                    index += 1
+                else:
+                    raise Exception(f'Invalid operator {tokens[index]}')
+
             left = self.parse_expression(tokens[:index])
-            right = self.parse_expression(tokens[index + 1:])
+            if tokens[index].token_type == TokenType.l_square:
+                if tokens[-1].token_type != TokenType.r_square:
+                    raise Exception(f'Expected ] at {tokens[-1].position}')
+                right = self.parse_expression(tokens[index + 1:-1])
+            else:
+                right = self.parse_expression(tokens[index + 1:])
         return Expression(token_type=tokens[index],
                           left=left,
                           right=right,
@@ -177,8 +199,6 @@ class Parser:
         end = self.skip(TokenType.assign)
         name = self.parse_ref_expression(self.tokens[self.cur_index:end])
         self.cur_index = end
-        # name = self.cur_token
-        # self.cur_index += 1
         if self.cur_token.token_type != TokenType.assign:
             raise Exception(f'Expected assigment at {self.cur_token.position}')
         self.cur_index += 1
@@ -206,8 +226,14 @@ class Parser:
         if tokens[index].is_operator:
             if not (tokens[:index] and tokens[index + 1:]):
                 raise Exception(f'Invalid operator {tokens[index]}')
+
             left = self.parse_expression(tokens[:index])
-            right = self.parse_expression(tokens[index + 1:])
+            if tokens[index].token_type == TokenType.l_square:
+                if tokens[-1].token_type != TokenType.r_square:
+                    raise Exception(f'Expected ] at {tokens[-1].position}')
+                right = self.parse_expression(tokens[index + 1:-1])
+            else:
+                right = self.parse_expression(tokens[index + 1:])
         return Expression(token_type=tokens[index],
                           left=left,
                           right=right,

@@ -1,5 +1,6 @@
 from lexer.token_types import TokenType
 from my_parser.comp_types import eq_types, type_transfers
+from my_parser.expressions import Value
 
 
 class Command:
@@ -14,6 +15,10 @@ class Declaration(Command):
         self.value = value
 
     def execute(self, mem):
+        if not self.value:
+            mem[self.name] = Value(self.type_, None)
+            return
+
         value = self.value.get_value(mem)
         if (self.type_, value.type_) not in eq_types:
             raise Exception(f'Incompatible type for var {self.name} expected {self.type_}')

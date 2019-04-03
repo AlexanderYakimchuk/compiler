@@ -67,6 +67,12 @@ comp_types = {
     ('TicketType', 'Attendee'): {
         TokenType.plus: ('TicketType', lambda a, b: a + b),
     },
+    ('TicketTypeArr', TokenType.int_number): {
+        TokenType.l_square: ('TicketType', lambda a, b: a[b]),
+    },
+    ('AttendeeArr', TokenType.int_number): {
+        TokenType.l_square: ('Attendee', lambda a, b: a[b]),
+    },
 }
 
 eq_types = [

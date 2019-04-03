@@ -29,13 +29,13 @@ class Event:
         self.name = self.name.get_value(mem)
         if self.name.type_ != TokenType.string_value:
             raise Exception("Event name must be string")
-        # self.name = self.name.value
         self.quantity = self.quantity.get_value(mem)
         if self.quantity.type_ != TokenType.int_number:
             raise Exception("Event quantity must be int")
-        # self.quantity = self.quantity.value
         if self.ticket_types:
-            self.ticket_types = self.ticket_types.get_value(mem).value
+            self.ticket_types = self.ticket_types.get_value(mem)
+        else:
+            self.ticket_types = Value('TicketTypeArr', [])
         self.__calculated = True
         return Value(self.type_, self)
 
@@ -59,7 +59,7 @@ class Event:
         return self
 
     def sub_ticket_type(self, ticket_type):
-        if ticket_type.value.attendees.value:
+        if ticket_type.attendees.value:
             raise Exception("Can not delete ticket type with attendees.")
         self.ticket_types.value.remove(ticket_type)
 
@@ -93,6 +93,8 @@ class TicketType:
             raise Exception("TicketType price must be real")
         if self.attendees:
             self.attendees = self.attendees.get_value(mem)
+        else:
+            self.attendees = Value('AttendeeArr', [])
         self.__calculated = True
         return Value(self.type_, self)
 
@@ -136,3 +138,13 @@ class Attendee:
             raise Exception("TicketType quantity must be int")
         self.__calculated = True
         return Value(self.type_, self)
+
+
+class Array:
+    def __init__(self, type_, value=None):
+        self.type = type_
+        self.value = value
+
+    @property
+    def type_(self):
+        return f'{self.type}Array'

@@ -1,5 +1,5 @@
 from lexer.token_types import TokenType, types, operators, creators, \
-    ref_operators
+    ref_operators, unary_operators
 
 
 class Token:
@@ -39,4 +39,8 @@ class Token:
     @property
     def is_ref_operator(self):
         return self.token_type in ref_operators
+
+    @property
+    def is_unary_operator(self):
+        return self.token_type in unary_operators
 

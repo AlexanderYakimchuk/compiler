@@ -22,14 +22,19 @@ code = '''  int i = 2;
             }
             t = true and (p > 4);'''
 code1 = '''
-    ticketType t = TicketType(name="VIP", quantity=5 * 2, price=99.99 - 1);
-    ticketType t1 = TicketType(name="Standart", quantity=t.quantity * 2, price=49.99);
-    int a = 2;
-    a = a + 3;
-    t.quantity = t.quantity + 1.0;
-    print(t.quantity);
-    print(t1.quantity);
-    print(a);'''
+    event e = Event(name="my ivent", quantity=4);
+    ticketType t = TicketType(name="VIP", price=39.99, quantity=10);
+    event e1;
+    e1 = Event(name=e.name, quantity=4);
+    e = e + t;
+    int a = -2;
+    print(-a);
+    t = t + Attendee(name="I", place=5);
+    e.ticket_types[0].name = "NEW";
+    print(e.ticket_types[(30 - 30) * 2].name);'''
+
+code2 = '''
+        t[4].a[2+3]'''
 lexer = Lexer(code1)
 tokens = lexer.get_all_tokens()
 tokens = tokens
@@ -37,10 +42,9 @@ parser = Parser(tokens)
 simulator = Simulator(parser)
 # parser.parse()
 simulator.simulate()
-# exp.display()
 
 # code = '''True and (5 > 4)'''
-# lexer = Lexer(code)
+# lexer = Lexer(code2)
 # tokens = lexer.get_all_tokens()
 # parser = Parser(tokens)
 # exp = parser.parse_expression()

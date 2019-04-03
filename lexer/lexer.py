@@ -2,7 +2,7 @@ import re
 
 from lexer.token import Token
 from lexer.token_types import TokenType, reserved_identifiers, arithmetic, \
-    assigments, comparisons, parenthesis, braces
+    assigments, comparisons, parenthesis, braces, squares
 
 
 class Lexer:
@@ -58,6 +58,9 @@ class Lexer:
         if self.is_brace(character):
             return self.recognize_brace()
 
+        if self.is_square(character):
+            return self.recognize_square()
+
         if character == '"':
             return self.recognize_string()
 
@@ -78,6 +81,9 @@ class Lexer:
 
     def is_brace(self, ch):
         return ch in braces
+
+    def is_square(self, ch):
+        return ch in squares
 
     def skip_whitespaces_and_ends(self):
         character = self.input[self.position]
@@ -156,6 +162,12 @@ class Lexer:
         self.column += 1
         return Token(braces[p], p, self.line, self.column - 1)
 
+    def recognize_square(self):
+        p = self.input[self.position]
+        self.position += 1
+        self.column += 1
+        return Token(squares[p], p, self.line, self.column - 1)
+
     def recognize_string(self):
         r = re.match(r'".*"', self.input[self.position:])
         self.position += r.end()
@@ -169,11 +181,3 @@ class Lexer:
         self.column += 1
         return Token(TokenType.reference, p, self.line, self.column - 1)
 
-
-'''
-int a = 10;
-int b = 20;
-real c = 0.9;
-c += a;
-b = a * b + c;
-'''

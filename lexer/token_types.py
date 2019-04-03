@@ -27,6 +27,8 @@ class TokenType(Enum):
     real_number = 'real number'
     string_value = 'string value'
     print_st = 'print'
+    arr = 'array'
+    array_creator = 'array creator'
 
     # arithmetic operators
     plus = '+'
@@ -55,6 +57,10 @@ class TokenType(Enum):
     #braces
     l_brace = '{'
     r_brace = '}'
+
+    #squares
+    l_square = '['
+    r_square = ']'
 
     #ref
     reference = '.'
@@ -85,7 +91,9 @@ reserved_identifiers = {
     'Event': TokenType.event_creator,
     'TicketType': TokenType.ticket_type_creator,
     'Attendee': TokenType.attendee_creator,
-    'print': TokenType.print_st
+    'print': TokenType.print_st,
+    'arr': TokenType.arr,
+    'Array': TokenType.array_creator
 }
 
 arithmetic = {
@@ -121,6 +129,11 @@ braces = {
     '}': TokenType.r_brace
 }
 
+squares = {
+    '[': TokenType.l_square,
+    ']': TokenType.r_square
+}
+
 types = [TokenType.int, TokenType.string, TokenType.boolean, TokenType.real,
          TokenType.event, TokenType.ticket_type, TokenType.attendee]
 
@@ -136,11 +149,17 @@ operators = {
     TokenType.minus: 3,
     TokenType.times: 2,
     TokenType.div: 2,
-    TokenType.reference: 1}
+    TokenType.reference: 1,
+    TokenType.l_square: 1}
 
 ref_operators = {
-    TokenType.reference: 1
+    TokenType.reference: 1,
+    TokenType.l_square: 1
 }
+
+unary_operators = [
+    TokenType.plus, TokenType.minus
+]
 
 creators = [TokenType.event_creator, TokenType.ticket_type_creator,
             TokenType.attendee_creator]
