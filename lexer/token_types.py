@@ -73,7 +73,7 @@ reserved_identifiers = {
     'if': TokenType.if_st,
     'else': TokenType.else_st,
     'for': TokenType.for_st,
-    'while': TokenType.for_st,
+    'while': TokenType.while_st,
     'structType': TokenType.struct_st,
     'and': TokenType.and_st,
     'or': TokenType.or_st,

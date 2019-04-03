@@ -17,8 +17,16 @@ code = '''  int i = 2;
             p = 9.0;
             event e = Event(name="my event", quantity=5) + 100 + 4;
             bool t = 9 + 4 == 9 + 2 + 2;
+            while p < 15 {
+                p = p + 1;
+            }
             t = true and (p > 4);'''
-lexer = Lexer(code)
+code1 = '''
+    int p = 1;
+    while p < 5 {
+        p = p + 1;
+    }'''
+lexer = Lexer(code1)
 tokens = lexer.get_all_tokens()
 tokens = tokens
 parser = Parser(tokens)

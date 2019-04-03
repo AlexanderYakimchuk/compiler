@@ -46,9 +46,10 @@ class Expression:
         return f"{self.token}; left={self.left}; right={self.right}"
 
     def value(self, mem):
-        if not self.value_:
-            self.value_ = self.get_value(mem)
-        return self.value_
+        # if not self.value_:
+        #     self.value_ = self.get_value(mem)
+        # return self.value_
+        return self.get_value(mem)
 
     def get_value(self, mem):
         if not self.token.is_operator:

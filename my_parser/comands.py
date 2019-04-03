@@ -36,6 +36,22 @@ class IfStatement(Command):
             command.execute(mem)
 
 
+class WhileStatement(Command):
+    def __init__(self, cond, block):
+        self.cond = cond
+        self.block = block
+
+    def execute(self, mem):
+        cond = self.cond.get_value(mem)
+        if cond.type_ != TokenType.bool_value:
+            raise Exception(f'Expected {TokenType.bool_value.name} after "if".')
+        while cond.value:
+            for command in self.block.commands:
+                command.execute(mem)
+            cond = self.cond.get_value(mem)
+            print(mem.get('p').value)
+
+
 class Assigment(Command):
     def __init__(self, name, value):
         self.name = name
