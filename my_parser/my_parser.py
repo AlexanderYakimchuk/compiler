@@ -1,6 +1,6 @@
 from lexer.token_types import TokenType, operators
 from my_parser.comands import Declaration, IfStatement, Assigment, \
-    WhileStatement
+    WhileStatement, PrintStatement
 from my_parser.expressions import Expression, Block
 from my_parser.variables import Event, TicketType, Attendee
 
@@ -29,6 +29,8 @@ class Parser:
             return self.parse_assigment()
         elif self.cur_token.token_type == TokenType.while_st:
             return self.parse_while()
+        elif self.cur_token.token_type == TokenType.print_st:
+            return self.parse_print()
 
     def get_max_priority(self, tokens):
         max_prior = -float('inf')
@@ -184,6 +186,18 @@ class Parser:
         self.cur_index = end + 1
         block = self.parse_block()
         return WhileStatement(cond, block)
+
+    def parse_print(self):
+        self.cur_index += 1
+        if self.cur_token.token_type != TokenType.l_parenthesis:
+            raise Exception(f'Expected ( at {self.cur_token.position}')
+        self.cur_index += 1
+        end = self.skip(TokenType.semicolon)
+        if self.tokens[end - 1].token_type != TokenType.r_parenthesis:
+            raise Exception(f'Expected ) at {self.tokens[end - 1].position}')
+        value = self.parse_expression(self.tokens[self.cur_index:end - 1])
+        self.cur_index = end + 1
+        return PrintStatement(value)
 
     def expect(self, token, token_type):
         if token.token_type != token_type:

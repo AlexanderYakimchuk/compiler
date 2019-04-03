@@ -19,6 +19,7 @@ code = '''  int i = 2;
             bool t = 9 + 4 == 9 + 2 + 2;
             while p < 15 {
                 p = p + 1;
+                print(p);
             }
             t = true and (p > 4);'''
 code1 = '''
@@ -26,7 +27,7 @@ code1 = '''
     while p < 5 {
         p = p + 1;
     }'''
-lexer = Lexer(code1)
+lexer = Lexer(code)
 tokens = lexer.get_all_tokens()
 tokens = tokens
 parser = Parser(tokens)

@@ -26,6 +26,7 @@ class TokenType(Enum):
     int_number = 'int number'
     real_number = 'real number'
     string_value = 'string value'
+    print_st = 'print'
 
     # arithmetic operators
     plus = '+'
@@ -72,9 +73,7 @@ reserved_identifiers = {
     'bool': TokenType.boolean,
     'if': TokenType.if_st,
     'else': TokenType.else_st,
-    'for': TokenType.for_st,
     'while': TokenType.while_st,
-    'structType': TokenType.struct_st,
     'and': TokenType.and_st,
     'or': TokenType.or_st,
     'not': TokenType.not_st,
@@ -85,7 +84,8 @@ reserved_identifiers = {
     'attendee': TokenType.attendee,
     'Event': TokenType.event_creator,
     'TicketType': TokenType.ticket_type_creator,
-    'Attendee': TokenType.attendee_creator
+    'Attendee': TokenType.attendee_creator,
+    'print': TokenType.print_st
 }
 
 arithmetic = {

@@ -49,7 +49,6 @@ class WhileStatement(Command):
             for command in self.block.commands:
                 command.execute(mem)
             cond = self.cond.get_value(mem)
-            print(mem.get('p').value)
 
 
 class Assigment(Command):
@@ -67,3 +66,12 @@ class Assigment(Command):
                 f'Incompatible type for var {self.name} expected {old_value.type_}')
         value.type_ = old_value.type_
         mem[self.name] = value
+
+
+class PrintStatement(Command):
+    def __init__(self, value):
+        self.value = value
+
+    def execute(self, mem):
+        value = self.value.get_value(mem=mem)
+        print(value.value)
