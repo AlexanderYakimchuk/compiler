@@ -1,0 +1,123 @@
+from lexer.token_types import TokenType
+from my_parser.comp_types import comp_types
+
+
+def fit_value(type_):
+    types = {
+        TokenType.int_number: int,
+        TokenType.real_number: float,
+        TokenType.string_value: str,
+        TokenType.bool_value: lambda a: True if a == 'true' or a is True else False
+    }
+    if types.get(type_):
+        return types[type_]
+
+
+class Value:
+    def __init__(self, type_, value):
+        self.type_ = type_
+        fit = fit_value(type_)
+        self.value = value
+        if fit:
+            self.value = fit_value(type_)(value)
+
+    def __repr__(self):
+        return f"{self.type_}: {self.value}"
+
+    def make_operation(self, op, other):
+        allowed_op = comp_types.get((self.type_, other.type_))
+        if not allowed_op:
+            raise Exception(f'Incompatible types {self.type_} and {other.type_}.')
+        type_, func = allowed_op.get(op)
+        if not func:
+            raise Exception(f"Unresolved operation {op} for {self.type_} and {other.type_}.")
+        return Value(type_, func(self.value, other.value))
+
+
+class Expression:
+    def __init__(self, token_type, left, right, tokens=None):
+        self.token = token_type
+        self.left = left
+        self.right = right
+        self.tokens = tokens
+        self.value_ = None
+
+    def __repr__(self):
+        return f"{self.token}; left={self.left}; right={self.right}"
+
+    def value(self, mem):
+        if not self.value_:
+            self.value_ = self.get_value(mem)
+        return self.value_
+
+    def get_value(self, mem):
+        if not self.token.is_operator:
+            if self.token.token_type == TokenType.identifier:
+                value = mem.get(self.token.value)
+                if not value:
+                    raise Exception(f"Variable {self.token.value} is not declared.")
+                return value
+            return Value(self.token.token_type, self.token.value)
+        left = self.left.value(mem)
+        right = self.right.value(mem)
+        return left.make_operation(self.token.token_type, right)
+
+    def display(self):
+        lines, _, _, _ = self._display_aux()
+        for line in lines:
+            print(line)
+
+    def _display_aux(self):
+        """Returns list of strings, width, height, and horizontal coordinate of the root."""
+        # No child.
+        if self.right is None and self.left is None:
+            line = '%s' % self.token
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if self.right is None:
+            lines, n, p, x = self.left._display_aux()
+            s = '%s' % self.token
+            u = len(s)
+            first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
+            second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
+            shifted_lines = [line + u * ' ' for line in lines]
+            return [first_line,
+                    second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if self.left is None:
+            lines, n, p, x = self.right._display_aux()
+            s = '%s' % self.token
+            u = len(s)
+            first_line = s + x * '_' + (n - x) * ' '
+            second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
+            shifted_lines = [u * ' ' + line for line in lines]
+            return [first_line,
+                    second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.left._display_aux()
+        right, m, q, y = self.right._display_aux()
+        s = '%s' % self.token
+        u = len(s)
+        first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (
+                m - y) * ' '
+        second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (
+                m - y - 1) * ' '
+        if p < q:
+            left += [n * ' '] * (q - p)
+        elif q < p:
+            right += [m * ' '] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * ' ' + b for a, b in
+                                             zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
+
+
+class Block:
+    def __init__(self):
+        self.commands = []

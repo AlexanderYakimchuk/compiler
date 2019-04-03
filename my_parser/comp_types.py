@@ -1,0 +1,99 @@
+from lexer.token_types import TokenType
+
+comp_types = {
+    (TokenType.int_number, TokenType.int_number): {
+        TokenType.plus: (TokenType.int_number, lambda a, b: a + b),
+        TokenType.minus: (TokenType.int_number, lambda a, b: a - b),
+        TokenType.times: (TokenType.int_number, lambda a, b: a * b),
+        TokenType.div: (TokenType.real_number, lambda a, b: a / b),
+        TokenType.eq: (TokenType.bool_value, lambda a, b: a == b),
+        TokenType.gt: (TokenType.bool_value, lambda a, b: a > b),
+        TokenType.gte: (TokenType.bool_value, lambda a, b: a >= b),
+        TokenType.lt: (TokenType.bool_value, lambda a, b: a < b),
+        TokenType.lte: (TokenType.bool_value, lambda a, b: a <= b),
+    },
+    (TokenType.int_number, TokenType.real_number): {
+        TokenType.plus: (TokenType.real_number, lambda a, b: a + b),
+        TokenType.minus: (TokenType.real_number, lambda a, b: a - b),
+        TokenType.times: (TokenType.real_number, lambda a, b: a * b),
+        TokenType.div: (TokenType.real_number, lambda a, b: a / b),
+        TokenType.eq: (TokenType.bool_value, lambda a, b: a == b),
+        TokenType.gt: (TokenType.bool_value, lambda a, b: a > b),
+        TokenType.gte: (TokenType.bool_value, lambda a, b: a >= b),
+        TokenType.lt: (TokenType.bool_value, lambda a, b: a < b),
+        TokenType.lte: (TokenType.bool_value, lambda a, b: a <= b),
+    },
+    (TokenType.real_number, TokenType.int_number): {
+        TokenType.plus: (TokenType.real_number, lambda a, b: a + b),
+        TokenType.minus: (TokenType.real_number, lambda a, b: a - b),
+        TokenType.times: (TokenType.real_number, lambda a, b: a * b),
+        TokenType.div: (TokenType.real_number, lambda a, b: a / b),
+        TokenType.eq: (TokenType.bool_value, lambda a, b: a == b),
+        TokenType.gt: (TokenType.bool_value, lambda a, b: a > b),
+        TokenType.gte: (TokenType.bool_value, lambda a, b: a >= b),
+        TokenType.lt: (TokenType.bool_value, lambda a, b: a < b),
+        TokenType.lte: (TokenType.bool_value, lambda a, b: a <= b),
+    },
+    (TokenType.real_number, TokenType.real_number): {
+        TokenType.plus: (TokenType.real_number, lambda a, b: a + b),
+        TokenType.minus: (TokenType.real_number, lambda a, b: a - b),
+        TokenType.times: (TokenType.real_number, lambda a, b: a * b),
+        TokenType.div: (TokenType.real_number, lambda a, b: a / b),
+        TokenType.eq: (TokenType.bool_value, lambda a, b: a == b),
+        TokenType.gt: (TokenType.bool_value, lambda a, b: a > b),
+        TokenType.gte: (TokenType.bool_value, lambda a, b: a >= b),
+        TokenType.lt: (TokenType.bool_value, lambda a, b: a < b),
+        TokenType.lte: (TokenType.bool_value, lambda a, b: a <= b),
+    },
+    (TokenType.bool_value, TokenType.bool_value): {
+        TokenType.eq: (TokenType.bool_value, lambda a, b: a == b),
+        TokenType.and_st: (TokenType.bool_value, lambda a, b: (a and b)),
+        TokenType.or_st: (TokenType.bool_value, lambda a, b: (a or b)),
+    },
+    ('Event', TokenType.int_number): {
+        TokenType.plus: ('Event', lambda a, b: a + b),
+        TokenType.minus: ('Event', lambda a, b: a - b),
+        TokenType.times: ('Event', lambda a, b: a * b),
+    },
+    ('Event', 'TicketType'): {
+        TokenType.plus: ('Event', lambda a, b: a + b),
+        TokenType.minus: ('Event', lambda a, b: a - b),
+    },
+    ('TicketType', TokenType.int_number): {
+        TokenType.plus: ('TicketType', lambda a, b: a + b),
+        TokenType.minus: ('TicketType', lambda a, b: a - b),
+        TokenType.times: ('TicketType', lambda a, b: a * b),
+    },
+    ('TicketType', 'Attendee'): {
+        TokenType.plus: ('TicketType', lambda a, b: a + b),
+    },
+}
+
+eq_types = [
+    (TokenType.event, 'Event'),
+    ('Event', 'Event'),
+    (TokenType.ticket_type, 'TicketType'),
+    ('TicketType', 'TicketType'),
+    (TokenType.attendee, 'Attendee'),
+    ('Attendee', 'Attendee'),
+    (TokenType.real, TokenType.real_number),
+    (TokenType.real_number, TokenType.real_number),
+    (TokenType.real, TokenType.int_number),
+    (TokenType.real_number, TokenType.int_number),
+    (TokenType.int, TokenType.int_number),
+    (TokenType.int_number, TokenType.int_number),
+    (TokenType.boolean, TokenType.bool_value),
+    (TokenType.bool_value, TokenType.bool_value),
+    (TokenType.string, TokenType.string_value),
+    (TokenType.string_value, TokenType.string_value)
+]
+
+type_transfers = {
+    TokenType.event: 'Event',
+    TokenType.ticket_type: 'TicketType',
+    TokenType.attendee: 'Attendee',
+    TokenType.real: TokenType.real_number,
+    TokenType.int: TokenType.int_number,
+    TokenType.boolean: TokenType.bool_value,
+    TokenType.string: TokenType.string_value
+}
