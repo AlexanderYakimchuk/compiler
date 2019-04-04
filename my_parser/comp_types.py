@@ -73,6 +73,18 @@ comp_types = {
     ('AttendeeArr', TokenType.int_number): {
         TokenType.l_square: ('Attendee', lambda a, b: a[b]),
     },
+    ('intArray', TokenType.int_number): {
+        TokenType.l_square: (TokenType.int_number, lambda a, b: a[b]),
+    },
+    ('realArray', TokenType.int_number): {
+        TokenType.l_square: (TokenType.real_number, lambda a, b: a[b]),
+    },
+    ('booleanArray', TokenType.int_number): {
+        TokenType.l_square: (TokenType.bool_value, lambda a, b: a[b]),
+    },
+    ('stringArray', TokenType.int_number): {
+        TokenType.l_square: (TokenType.string_value, lambda a, b: a[b]),
+    },
 }
 
 eq_types = [
@@ -91,7 +103,15 @@ eq_types = [
     (TokenType.boolean, TokenType.bool_value),
     (TokenType.bool_value, TokenType.bool_value),
     (TokenType.string, TokenType.string_value),
-    (TokenType.string_value, TokenType.string_value)
+    (TokenType.string_value, TokenType.string_value),
+    ('intArray', TokenType.array_creator),
+    ('intArray', 'intArray'),
+    ('realArray', TokenType.array_creator),
+    ('realArray', 'realArray'),
+    ('booleanArray', TokenType.array_creator),
+    ('booleanArray', 'booleanArray'),
+    ('stringArray', TokenType.array_creator),
+    ('stringArray', 'stringArray'),
 ]
 
 type_transfers = {
@@ -101,5 +121,9 @@ type_transfers = {
     TokenType.real: TokenType.real_number,
     TokenType.int: TokenType.int_number,
     TokenType.boolean: TokenType.bool_value,
-    TokenType.string: TokenType.string_value
+    TokenType.string: TokenType.string_value,
+    'intArray': 'intArray',
+    'realArray': 'realArray',
+    'booleanArray': 'booleanArray',
+    'stringArray': 'stringArray'
 }

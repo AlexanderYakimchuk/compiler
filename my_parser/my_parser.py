@@ -3,7 +3,7 @@ from lexer.token_types import TokenType, operators, ref_operators
 from my_parser.comands import Declaration, IfStatement, Assigment, \
     WhileStatement, PrintStatement
 from my_parser.expressions import Expression, Block
-from my_parser.variables import Event, TicketType, Attendee
+from my_parser.variables import Event, TicketType, Attendee, Array
 
 
 class Parser:
@@ -12,6 +12,7 @@ class Parser:
         self.cur_index = 0
         self.commands = []
         self.variables = {}
+        self.__last_arr_type = None
 
     @property
     def cur_token(self):
@@ -130,6 +131,11 @@ class Parser:
     def parse_declaration(self):
         type_ = self.tokens[self.cur_index]
         self.cur_index += 1
+        el_type = None
+        if type_.token_type == TokenType.arr:
+            el_type = self.tokens[self.cur_index].token_type
+            self.__last_arr_type = el_type
+            self.cur_index += 1
         if self.cur_token.is_identifier:
             name = self.cur_token
         else:
@@ -142,7 +148,7 @@ class Parser:
         end = self.skip(TokenType.semicolon)
         self.cur_index = end + 1
         self.variables[name] = value
-        return Declaration(type_.token_type, name.value, value)
+        return Declaration(type_.token_type, name.value, value, el_type)
 
     def parse_if(self):
         self.cur_index += 1
@@ -170,6 +176,8 @@ class Parser:
         return block
 
     def parse_creator(self, tokens):
+        if tokens[0].token_type == TokenType.array_creator:
+            return self.parse_array_creator(tokens)
         index = 1
         params = {}
         self.expect(tokens[index], TokenType.l_parenthesis)
@@ -194,6 +202,22 @@ class Parser:
             return TicketType(**params)
         if tokens[0].token_type == TokenType.attendee_creator:
             return Attendee(**params)
+
+    def parse_array_creator(self, tokens):
+        index = 1
+        values = []
+        self.expect(tokens[index], TokenType.l_parenthesis)
+        index += 1
+        while tokens[index].token_type != TokenType.r_parenthesis:
+            end = self.skip_local(index, tokens, [TokenType.coma,
+                                                  TokenType.r_parenthesis])
+            value = self.parse_expression(tokens[index:end])
+            index = end
+            values.append(value)
+            if tokens[index].token_type == TokenType.r_parenthesis:
+                break
+            index += 1
+        return Array(self.__last_arr_type, values)
 
     def parse_assigment(self):
         end = self.skip(TokenType.assign)

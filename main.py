@@ -22,6 +22,13 @@ code = '''  int i = 2;
             }
             t = true and (p > 4);'''
 code1 = '''
+    arr string my_arr = Array("sdfs", "sdfsdfsd", "");
+    int i = 0;
+    while i < my_arr.len {
+        print(my_arr[i]);
+        i = i + 1;
+    }
+    print(my_arr);
     event e = Event(name="my ivent", quantity=4);
     ticketType t = TicketType(name="VIP", price=39.99, quantity=10);
     event e1;

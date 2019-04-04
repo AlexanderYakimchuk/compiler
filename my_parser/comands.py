@@ -1,6 +1,7 @@
 from lexer.token_types import TokenType
 from my_parser.comp_types import eq_types, type_transfers
 from my_parser.expressions import Value
+from my_parser.variables import Array
 
 
 class Command:
@@ -9,20 +10,24 @@ class Command:
 
 
 class Declaration(Command):
-    def __init__(self, type_, name, value):
+    def __init__(self, type_, name, value, el_type):
         self.type_ = type_
         self.name = name
         self.value = value
+        self.el_type = el_type
 
     def execute(self, mem):
+        type_ = self.type_
+        if self.type_ == TokenType.arr:
+            type_ = Array(self.el_type).type_
         if not self.value:
-            mem[self.name] = Value(self.type_, None)
+            mem[self.name] = Value(type_, None)
             return
 
         value = self.value.get_value(mem)
-        if (self.type_, value.type_) not in eq_types:
-            raise Exception(f'Incompatible type for var {self.name} expected {self.type_}')
-        value.type_ = type_transfers[self.type_]
+        if (type_, value.type_) not in eq_types:
+            raise Exception(f'Incompatible type for var {self.name} expected {type_}, received {value.type_}')
+        value.type_ = type_transfers[type_]
         mem[self.name] = value
 
 

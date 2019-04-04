@@ -1,5 +1,5 @@
 from lexer.token_types import TokenType
-from my_parser.comp_types import comp_types
+from my_parser.comp_types import comp_types, type_transfers
 
 
 def fit_value(type_):
@@ -19,18 +19,23 @@ class Value:
         fit = fit_value(type_)
         self.value = value
         if fit:
-            self.value = fit_value(type_)(value)
+            self.value = fit_value(type_)(self.value)
 
     def __repr__(self):
         return f"{self.type_}: {self.value}"
 
     def make_operation(self, op, other):
-        allowed_op = comp_types.get((self.type_, other.type_))
+        type1 = type_transfers.get(self.type_) or self.type_
+        type2 = type_transfers.get(other.type_) or other.type_
+        allowed_op = comp_types.get((type1, type2))
         if not allowed_op:
-            raise Exception(f'Incompatible types {self.type_} and {other.type_}.')
+            raise Exception(f'Incompatible types {type1} and {type2}.')
         type_, func = allowed_op.get(op)
         if not func:
-            raise Exception(f"Unresolved operation {op} for {self.type_} and {other.type_}.")
+            raise Exception(f"Unresolved operation {op} for {type1} and {type2}.")
+        res = func(self.value, other.value)
+        if isinstance(res, Value):
+            return res
         return Value(type_, func(self.value, other.value))
 
 

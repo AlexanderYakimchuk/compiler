@@ -135,7 +135,7 @@ squares = {
 }
 
 types = [TokenType.int, TokenType.string, TokenType.boolean, TokenType.real,
-         TokenType.event, TokenType.ticket_type, TokenType.attendee]
+         TokenType.event, TokenType.ticket_type, TokenType.attendee, TokenType.arr]
 
 operators = {
     TokenType.eq: 8,
@@ -162,4 +162,4 @@ unary_operators = [
 ]
 
 creators = [TokenType.event_creator, TokenType.ticket_type_creator,
-            TokenType.attendee_creator]
+            TokenType.attendee_creator, TokenType.array_creator]

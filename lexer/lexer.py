@@ -169,7 +169,7 @@ class Lexer:
         return Token(squares[p], p, self.line, self.column - 1)
 
     def recognize_string(self):
-        r = re.match(r'".*"', self.input[self.position:])
+        r = re.match(r'"[^"]*"', self.input[self.position:])
         self.position += r.end()
         self.column += r.end()
         string = r.group()
