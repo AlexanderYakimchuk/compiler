@@ -176,7 +176,7 @@ class Lexer:
         self.position += r.end()
         self.column += r.end()
         string = r.group()
-        return Token(TokenType.string_value, string, self.line, self.column - r.end())
+        return Token(TokenType.string_value, string[1:-1], self.line, self.column - r.end())
     
     def recognize_reference(self):
         p = self.input[self.position]

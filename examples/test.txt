@@ -1,0 +1,6 @@
+ticketType t = TicketType(name="VIP", price=99.1, quantity=2);
+attendee a = Attendee(name="I", place=8);
+t = t + a;
+print(t.attendees[0].name);
+string s = "compiler";
+print(s[1]);

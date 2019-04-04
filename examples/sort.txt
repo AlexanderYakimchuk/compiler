@@ -1,7 +1,6 @@
 arr int a = Array(1, 4, 2, 3, 4, 5, 9, 8, 7, 1);
 int i = 0;
 int j = 0;
-int t = 0;
 while i < a.len - 1 {
     j = i;
     while j < a.len {

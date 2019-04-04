@@ -87,6 +87,9 @@ comp_types = {
     ('stringArray', TokenType.int_number): {
         TokenType.l_square: (TokenType.string_value, lambda a, b: a[b]),
     },
+    (TokenType.string_value, TokenType.int_number): {
+        TokenType.l_square: (TokenType.string_value, lambda a, b: a[b]),
+    },
 }
 
 eq_types = [
