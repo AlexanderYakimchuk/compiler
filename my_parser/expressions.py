@@ -14,7 +14,11 @@ def fit_value(type_):
 
 
 class Value:
+    key = 0
+
     def __init__(self, type_, value):
+        Value.key += 1
+        self.key = Value.key
         self.type_ = type_
         fit = fit_value(type_)
         self.value = value

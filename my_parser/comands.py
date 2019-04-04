@@ -28,7 +28,7 @@ class Declaration(Command):
         if (type_, value.type_) not in eq_types:
             raise Exception(f'Incompatible type for var {self.name} expected {type_}, received {value.type_}')
         value.type_ = type_transfers[type_]
-        mem[self.name] = value
+        mem[self.name] = Value(value.type_, value.value)
 
 
 class IfStatement(Command):
@@ -42,6 +42,8 @@ class IfStatement(Command):
         if cond.type_ != TokenType.bool_value:
             raise Exception(f'Expected {TokenType.bool_value.name} after "if".')
         block = self.if_block if cond.value is True else self.else_block
+        if not block:
+            return
         for command in block.commands:
             command.execute(mem)
 
@@ -74,6 +76,10 @@ class Assigment(Command):
         if (old_value.type_, value.type_) not in eq_types:
             raise Exception(
                 f'Incompatible type for var expected {old_value.type_}')
+        if self.name.is_identifier:
+            mem[self.name.token.value] = Value(old_value.type_, value.value)
+            return
+
         old_value.value = value.value
 
 

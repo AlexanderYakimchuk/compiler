@@ -1,5 +1,5 @@
 from lexer.token_types import TokenType
-from my_parser.comp_types import eq_types
+from my_parser.comp_types import eq_types, type_transfers
 from my_parser.expressions import Value
 
 
@@ -164,9 +164,10 @@ class Array:
         if self.value:
             for i in range(len(self.value)):
                 value = self.value[i].get_value(mem)
-                if (self.type, value.type_) not in eq_types:
-                    raise Exception(f'Invalid element type. Expected {self.type} received {value.type_}')
-                self.value[i] = Value(self.type, value.value)
+                type_ = type_transfers.get(value.type_) or value.type_
+                if (self.type, type_) not in eq_types:
+                    raise Exception(f'Invalid element type. Expected {self.type} received {type_}')
+                self.value[i] = Value(type_, value.value)
         self.__calculated = True
         return Value(self.type_, self)
 

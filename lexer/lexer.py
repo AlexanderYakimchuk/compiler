@@ -24,8 +24,9 @@ class Lexer:
     def get_next_token(self):
         if self.position >= len(self.input):
             return Token(TokenType.eoi)
-
         self.skip_whitespaces_and_ends()
+        if self.position >= len(self.input):
+            return Token(TokenType.eoi)
 
         character = self.input[self.position]
 
@@ -93,6 +94,8 @@ class Lexer:
             if character == '\n':
                 self.column = 0
                 self.line += 1
+            if self.position >= len(self.input):
+                return
             character = self.input[self.position]
 
     def recognize_identifier(self):

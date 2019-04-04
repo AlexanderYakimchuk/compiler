@@ -1,0 +1,12 @@
+int a = 10;
+real b = 3.5;
+if b < a {
+    while b < a {
+        b = b + 1;
+    }
+    print(b);
+}
+else {
+    print("Already grater");
+}
+print("The end.");
