@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from lexer.token_types import TokenType
 
 comp_types = {
@@ -51,21 +53,21 @@ comp_types = {
         TokenType.or_st: (TokenType.bool_value, lambda a, b: (a or b)),
     },
     ('Event', TokenType.int_number): {
-        TokenType.plus: ('Event', lambda a, b: a + b),
-        TokenType.minus: ('Event', lambda a, b: a - b),
-        TokenType.times: ('Event', lambda a, b: a * b),
+        TokenType.plus: ('Event', lambda a, b: deepcopy(a) + b),
+        TokenType.minus: ('Event', lambda a, b: deepcopy(a) - b),
+        TokenType.times: ('Event', lambda a, b: deepcopy(a) * b),
     },
     ('Event', 'TicketType'): {
-        TokenType.plus: ('Event', lambda a, b: a + b),
-        TokenType.minus: ('Event', lambda a, b: a - b),
+        TokenType.plus: ('Event', lambda a, b: deepcopy(a) + b),
+        TokenType.minus: ('Event', lambda a, b: deepcopy(a) - b),
     },
     ('TicketType', TokenType.int_number): {
-        TokenType.plus: ('TicketType', lambda a, b: a + b),
-        TokenType.minus: ('TicketType', lambda a, b: a - b),
-        TokenType.times: ('TicketType', lambda a, b: a * b),
+        TokenType.plus: ('TicketType', lambda a, b: deepcopy(a) + b),
+        TokenType.minus: ('TicketType', lambda a, b: deepcopy(a) - b),
+        TokenType.times: ('TicketType', lambda a, b: deepcopy(a) * b),
     },
     ('TicketType', 'Attendee'): {
-        TokenType.plus: ('TicketType', lambda a, b: a + b),
+        TokenType.plus: ('TicketType', lambda a, b: deepcopy(a) + b),
     },
     ('TicketTypeArr', TokenType.int_number): {
         TokenType.l_square: ('TicketType', lambda a, b: a[b]),

@@ -1,14 +1,12 @@
-event e = Event(name="My event", quantity=100);
+event e = Event(name="My event", quantity=200);
 e = e + 100;
 print(e.quantity);
+
 
 ticketType t1 = TicketType(name="VIP", quantity=10, price=999.99);
 ticketType t2 = TicketType(name="Standart", quantity=100, price=99.99);
 
 e = e + t1 + t2;
 
-int i = 0;
-while i < e.ticket_types.len {
-    print(e.ticket_types[i].name);
-}
-
+print(e.ticket_types[0].name);
+print(e.ticket_types[1].name);

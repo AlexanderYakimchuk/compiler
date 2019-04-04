@@ -9,7 +9,7 @@ class TokenType(Enum):
     string = 'string'
     boolean = 'boolean'
     event = 'event'
-    ticket_type = 'ticket type'
+    ticket_type = 'ticketType'
     attendee = 'attendee'
     event_creator = 'event creator'
     ticket_type_creator = 'ticket type creator'
